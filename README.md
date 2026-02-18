@@ -159,14 +159,6 @@ Deadline
 
 ---
 
-# 🧰 Tech Stack
-
-Leo  
-Aleo  
-React  
-Vite  
----
-
 # 🎯 Use Case
 
 Solves major DeFi privacy problems:
