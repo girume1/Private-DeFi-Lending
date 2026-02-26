@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0 && prettier . --check",
+    "build": "tsc && vite build",
     "pretty": "prettier . --write",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
@@ -37,7 +36,6 @@
     "@uiw/react-codemirror": "^4.23.7",
     "antd": "^5.23.2",
     "axios": "^1.8.2",
-    "babel-loader": "^9.2.1",
     "copy-to-clipboard": "^3.3.3",
     "framer-motion": "^12.34.2",
     "gh-pages": "^6.3.0",
@@ -46,12 +44,8 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.1.3",
-    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.7",
-    "@babel/preset-env": "^7.26.7",
-    "@babel/preset-react": "^7.26.3",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react-swc": "^3.7.2",
@@ -61,13 +55,9 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.18",
-    "html-webpack-plugin": "^5.6.3",
     "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.4.2",
     "style-loader": "^4.0.0",
     "vite": "^6.3.4",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.0"
   }
 }
