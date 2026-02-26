@@ -53,16 +53,16 @@ program privlend.aleo {
     // =========================
     // 1) Private: create a credit tier record
     // =========================
-    transition create_credit_tier(tier: u8, nonce: field) -> CreditTier {
+    transition create_credit_tier(owner: address, tier: u8, nonce: field) -> CreditTier {
         // Validate tier (0, 1, or 2)
         assert(tier < 3u8);
-        
+
         let ct: CreditTier = CreditTier { 
-            owner: self.caller, 
+            owner, 
             tier, 
             nonce 
         };
-        
+
         return ct;
     }
 
