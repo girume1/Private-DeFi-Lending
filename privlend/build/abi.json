@@ -1,0 +1,619 @@
+{
+  "program": "privlend.aleo",
+  "structs": [],
+  "records": [
+    {
+      "path": [
+        "CreditTier"
+      ],
+      "fields": [
+        {
+          "name": "owner",
+          "ty": {
+            "Primitive": "Address"
+          },
+          "mode": "None"
+        },
+        {
+          "name": "tier",
+          "ty": {
+            "Primitive": {
+              "UInt": "U8"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "nonce",
+          "ty": {
+            "Primitive": "Field"
+          },
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "path": [
+        "Loan"
+      ],
+      "fields": [
+        {
+          "name": "owner",
+          "ty": {
+            "Primitive": "Address"
+          },
+          "mode": "None"
+        },
+        {
+          "name": "lender",
+          "ty": {
+            "Primitive": "Address"
+          },
+          "mode": "None"
+        },
+        {
+          "name": "loan_id",
+          "ty": {
+            "Primitive": {
+              "UInt": "U32"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "principal",
+          "ty": {
+            "Primitive": {
+              "UInt": "U64"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "collateral",
+          "ty": {
+            "Primitive": {
+              "UInt": "U64"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "tier",
+          "ty": {
+            "Primitive": {
+              "UInt": "U8"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "interest_bps",
+          "ty": {
+            "Primitive": {
+              "UInt": "U16"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "start_block",
+          "ty": {
+            "Primitive": {
+              "UInt": "U32"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "duration_blocks",
+          "ty": {
+            "Primitive": {
+              "UInt": "U32"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "repaid",
+          "ty": {
+            "Primitive": {
+              "UInt": "U64"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "status",
+          "ty": {
+            "Primitive": {
+              "UInt": "U8"
+            }
+          },
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "path": [
+        "Collateral"
+      ],
+      "fields": [
+        {
+          "name": "owner",
+          "ty": {
+            "Primitive": "Address"
+          },
+          "mode": "None"
+        },
+        {
+          "name": "loan_id",
+          "ty": {
+            "Primitive": {
+              "UInt": "U32"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "amount",
+          "ty": {
+            "Primitive": {
+              "UInt": "U64"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "locked_until",
+          "ty": {
+            "Primitive": {
+              "UInt": "U32"
+            }
+          },
+          "mode": "None"
+        }
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "name": "loan_counter",
+      "key": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      },
+      "value": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      }
+    },
+    {
+      "name": "loan_active",
+      "key": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      },
+      "value": {
+        "Primitive": "Boolean"
+      }
+    },
+    {
+      "name": "loan_owner",
+      "key": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      },
+      "value": {
+        "Primitive": "Address"
+      }
+    },
+    {
+      "name": "loan_deadline",
+      "key": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      },
+      "value": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      }
+    }
+  ],
+  "storage_variables": [],
+  "transitions": [
+    {
+      "name": "create_credit_tier",
+      "is_async": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "ty": {
+            "Plaintext": {
+              "Primitive": "Address"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "tier",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U8"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "nonce",
+          "ty": {
+            "Plaintext": {
+              "Primitive": "Field"
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": {
+            "Record": {
+              "path": [
+                "CreditTier"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "create_loan_private",
+      "is_async": false,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "start_block",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "lender",
+          "ty": {
+            "Plaintext": {
+              "Primitive": "Address"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "credit",
+          "ty": {
+            "Record": {
+              "path": [
+                "CreditTier"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "principal",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U64"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "collateral",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U64"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "interest_bps",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U16"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "duration_blocks",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": {
+            "Record": {
+              "path": [
+                "Loan"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "ty": {
+            "Record": {
+              "path": [
+                "Collateral"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "register_loan_public",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "borrower",
+          "ty": {
+            "Plaintext": {
+              "Primitive": "Address"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "start_block",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "duration_blocks",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "repay_private",
+      "is_async": false,
+      "inputs": [
+        {
+          "name": "loan",
+          "ty": {
+            "Record": {
+              "path": [
+                "Loan"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "payment",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U64"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": {
+            "Record": {
+              "path": [
+                "Loan"
+              ],
+              "program": "privlend"
+            }
+          },
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "mark_repaid_public",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "liquidate_public",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "get_loan_status",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "get_loan_owner",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "get_loan_deadline",
+      "is_async": true,
+      "inputs": [
+        {
+          "name": "loan_id",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "get_loan_counter",
+      "is_async": true,
+      "inputs": [],
+      "outputs": [
+        {
+          "ty": "Future",
+          "mode": "None"
+        }
+      ]
+    }
+  ]
+}
