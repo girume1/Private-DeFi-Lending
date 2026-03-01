@@ -13,6 +13,8 @@
 │   │   ├── 📄 LoanCreationForm.tsx
 │   │   ├── 📄 Sidebar.tsx
 │   │   ├── 📄 StatsDashboard.tsx
+│   │   ├── 🎨 VariableProximity.css
+│   │   ├── 📄 VariableProximity.tsx
 │   │   └── 📄 WalletButton.tsx
 │   ├── 📁 context
 │   │   └── 📄 PrivLendContext.tsx
@@ -22,6 +24,8 @@
 │   │   ├── 📄 Docs.tsx
 │   │   ├── 📄 History.tsx
 │   │   └── 📄 Markets.tsx
+│   ├── 📁 services
+│   │   └── 📄 TransactionManager.ts
 │   ├── 📁 types
 │   │   └── 📄 index.ts
 │   ├── 📁 utils
@@ -35,6 +39,5 @@
 ├── ⚙️ pnpm-lock.yaml
 ├── ⚙️ tsconfig.json
 ├── ⚙️ tsconfig.node.json
-├── 📄 vite.config.js
-└── 📄 webpack.config.ts
+└── 📄 vite.config.ts
 ```
