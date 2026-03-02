@@ -22,18 +22,17 @@ export class TransactionManager {
     try {
       const history = await this.requestTransactionHistory(PROGRAM_ID);
 
-      if (!history?.transactions) return [];
+      if (!history || !history.transactions) return [];
 
-      const mapped: TransactionItem[] = history.transactions.map((tx: any) => ({
-        id: tx.transactionId,
-        type: this.mapFunctionName(tx.functionName),
-        status: this.mapStatus(tx.status),
-        timestamp: tx.timestamp || Date.now()
-      }));
-
-      return mapped.reverse();
-    } catch (err) {
-      console.error("TransactionManager load failed:", err);
+      return history.transactions
+        .map((tx: any) => ({
+          id: tx.transactionId,
+          type: this.mapFunctionName(tx.functionName),
+          status: this.mapStatus(tx.status),
+          timestamp: tx.timestamp || Date.now()
+        }))
+        .reverse();
+    } catch {
       return [];
     }
   }
@@ -53,17 +52,10 @@ export class TransactionManager {
   private mapFunctionName(fn?: string): string {
     if (!fn) return "Unknown";
 
-    if (fn.includes("create_credit_tier"))
-      return "Create Credit Tier";
-
-    if (fn.includes("create_loan"))
-      return "Create Loan";
-
-    if (fn.includes("repay"))
-      return "Repay Loan";
-
-    if (fn.includes("liquidate"))
-      return "Liquidate";
+    if (fn.includes("create_credit_tier")) return "Create Credit Tier";
+    if (fn.includes("create_loan")) return "Create Loan";
+    if (fn.includes("repay")) return "Repay Loan";
+    if (fn.includes("liquidate")) return "Liquidate";
 
     return fn;
   }
