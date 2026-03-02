@@ -9,6 +9,8 @@ import { SoterWalletAdapter } from '@provablehq/aleo-wallet-adaptor-soter';
 import { Network } from '@provablehq/aleo-types';
 import { DecryptPermission } from '@provablehq/aleo-wallet-adaptor-core';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useWallet } from '@provablehq/aleo-wallet-adaptor-react';
+
 
 import '@provablehq/aleo-wallet-adaptor-react-ui/dist/styles.css';
 
@@ -31,6 +33,17 @@ export default function App() {
     new SoterWalletAdapter()
   ], []);
 
+   const WalletAwarePrivLendProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { address } = useWallet();
+
+  return (
+    <PrivLendProvider key={address ?? "no-wallet"}>
+      {children}
+    </PrivLendProvider>
+  );
+};
+
+
   return (
     <AleoWalletProvider
       wallets={wallets}
@@ -40,7 +53,7 @@ export default function App() {
       programs={[PROGRAM_ID]}
     >
       <WalletModalProvider>
-        <PrivLendProvider>
+        <WalletAwarePrivLendProvider>
           <Routes>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -51,7 +64,7 @@ export default function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>
-        </PrivLendProvider>
+        </WalletAwarePrivLendProvider>
       </WalletModalProvider>
     </AleoWalletProvider>
   );
