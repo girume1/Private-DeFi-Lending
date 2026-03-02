@@ -201,7 +201,7 @@ PrivLend proves:
 
 ---
 
-# 📄 License ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+# 📄 License [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
 
