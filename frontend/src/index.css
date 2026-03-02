@@ -1,0 +1,158 @@
+/* ===== Global Reset ===== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at 20% 20%, #1e1b4b 0%, #0f172a 60%);
+  min-height: 100vh;
+  color: #f8fafc;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Remove default button styling glitches */
+button {
+  font-family: inherit;
+}
+
+/* ===== Scrollbar (Chrome) ===== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8, #a78bfa);
+}
+
+/* ===== Scrollbar (Firefox) ===== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #0f172a;
+}
+
+/* ===== Animations ===== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
+  50% { box-shadow: 0 0 35px rgba(99, 102, 241, 0.4); }
+}
+
+/* ===== Utility Classes ===== */
+
+.float { animation: float 3s ease-in-out infinite; }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+.glow { animation: glow 3s ease-in-out infinite; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #334155;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ===== Glassmorphism ===== */
+
+.glass {
+  background: rgba(30, 41, 59, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.glass:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(30, 41, 59, 0.7);
+}
+
+/* ===== Selection ===== */
+
+::selection {
+  background: #6366f1;
+  color: white;
+}
+
+/* ===== Focus Accessibility ===== */
+
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* ===== Images ===== */
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+img.loading {
+  filter: blur(5px);
+  transition: filter 0.3s ease;
+}
+
+img.loaded {
+  filter: blur(0);
+}
+
+/* ===== Mobile Utilities ===== */
+
+@media (max-width: 768px) {
+  .hide-mobile { display: none; }
+}
+
+@media (min-width: 769px) {
+  .show-mobile { display: none; }
+}
