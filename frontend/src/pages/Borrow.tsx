@@ -1,49 +1,57 @@
-import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Typography,
-  Paper,
-  Dialog,
-  DialogContent,
-  Alert,
-  Stack,
-  Chip
-} from '@mui/material';
-import {
-  Add as AddIcon,
-  AssignmentTurnedIn as TierIcon
-} from '@mui/icons-material';
-import { LoanCreationForm } from '../components/LoanCreationForm';
-import { CreditTierCreator } from '../components/CreditTierCreator';
-import { usePrivLend } from '../context/PrivLendContext';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { Box, Typography, Paper, Dialog, DialogContent, Alert, Stack, Chip, Button } from "@mui/material";
+import { Add as AddIcon, AssignmentTurnedIn as TierIcon, AccountBalanceWallet as WalletIcon } from "@mui/icons-material";
+import { LoanCreationForm } from "../components/LoanCreationForm";
+import { CreditTierCreator } from "../components/CreditTierCreator";
+import { usePrivLend } from "../context/PrivLendContext";
+import { useWallet } from "@provablehq/aleo-wallet-adaptor-react";
+import { useWalletModal } from "@provablehq/aleo-wallet-adaptor-react-ui";
+import { motion } from "framer-motion";
 
 export const Borrow: React.FC = () => {
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
+
   const {
-    refreshData,
-    userLoans,
-    currentBlock
+    activeUserLoans,
+    expiredUserLoans,
+    settledUserLoans,
+    refreshData
   } = usePrivLend();
 
-  const [showTierModal, setShowTierModal] = useState(false);
-  const [showLoanModal, setShowLoanModal] = useState(false);
+  const [showTierModal, setShowTierModal] =
+    useState(false);
+  const [showLoanModal, setShowLoanModal] =
+    useState(false);
 
-  // ===== Portfolio Summary =====
+  if (!connected) {
+    return (
+      <Box
+        textAlign="center"
+        py={8}
+      >
+        <Typography variant="h5" mb={2}>
+          Connect your wallet to borrow
+        </Typography>
 
-  const activeLoans = useMemo(
-    () => userLoans.filter(l => l.active),
-    [userLoans]
-  );
+        <Button
+          variant="contained"
+          startIcon={<WalletIcon />}
+          onClick={() => setVisible(true)}
+        >
+          Connect Wallet
+        </Button>
+      </Box>
+    );
+  }
 
-  const expiredLoans = useMemo(
-    () =>
-      userLoans.filter(
-        l => l.active && currentBlock > l.deadline
-      ),
-    [userLoans, currentBlock]
-  );
+  const totalLoans =
+    activeUserLoans.length +
+    expiredUserLoans.length +
+    settledUserLoans.length;
 
-const totalExposure = activeLoans.length;
+  const exposureCount =
+    activeUserLoans.length;
 
   return (
     <Box>
@@ -65,41 +73,67 @@ const totalExposure = activeLoans.length;
       </Typography>
 
       {/* Portfolio Summary */}
-      {userLoans.length > 0 && (
-        <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-          <Chip label={`Active: ${activeLoans.length}`} />
+      {totalLoans > 0 && (
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={2}
+          sx={{ mb: 4 }}
+        >
           <Chip
-            label={`Expired: ${expiredLoans.length}`}
+            label={`Active: ${activeUserLoans.length}`}
+          />
+          <Chip
+            label={`Expired: ${expiredUserLoans.length}`}
             color="error"
           />
-          <Chip label={`Exposure: ${totalExposure}`} />
+          <Chip
+            label={`Total: ${totalLoans}`}
+          />
         </Stack>
       )}
 
-      {expiredLoans.length > 0 && (
+      {expiredUserLoans.length > 0 && (
         <Alert severity="warning" sx={{ mb: 4 }}>
-          You have {expiredLoans.length} loan(s) eligible for liquidation.
+          You have{" "}
+          {expiredUserLoans.length} loan(s)
+          eligible for liquidation.
         </Alert>
       )}
 
       {/* Borrow Steps */}
-      <Box sx={{ display: 'flex', gap: 3 }}>
-        <motion.div whileHover={{ y: -5 }} style={{ flex: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            md: "row"
+          },
+          gap: 3
+        }}
+      >
+        {/* Step 1 */}
+        <motion.div
+          whileHover={{ y: -5 }}
+          style={{ flex: 1 }}
+        >
           <Paper
             sx={{
               p: 4,
-              textAlign: 'center',
-              cursor: 'pointer',
+              textAlign: "center",
+              cursor: "pointer",
               background:
-                'linear-gradient(135deg, #1e293b, #0f172a)',
-              border: '1px solid rgba(255,255,255,0.08)'
+                "linear-gradient(135deg, #1e293b, #0f172a)",
+              border:
+                "1px solid rgba(255,255,255,0.08)"
             }}
-            onClick={() => setShowTierModal(true)}
+            onClick={() =>
+              setShowTierModal(true)
+            }
           >
             <TierIcon
               sx={{
                 fontSize: 50,
-                color: 'primary.main',
+                color: "primary.main",
                 mb: 2
               }}
             />
@@ -117,22 +151,29 @@ const totalExposure = activeLoans.length;
           </Paper>
         </motion.div>
 
-        <motion.div whileHover={{ y: -5 }} style={{ flex: 1 }}>
+        {/* Step 2 */}
+        <motion.div
+          whileHover={{ y: -5 }}
+          style={{ flex: 1 }}
+        >
           <Paper
             sx={{
               p: 4,
-              textAlign: 'center',
-              cursor: 'pointer',
+              textAlign: "center",
+              cursor: "pointer",
               background:
-                'linear-gradient(135deg, #1e293b, #0f172a)',
-              border: '1px solid rgba(255,255,255,0.08)'
+                "linear-gradient(135deg, #1e293b, #0f172a)",
+              border:
+                "1px solid rgba(255,255,255,0.08)"
             }}
-            onClick={() => setShowLoanModal(true)}
+            onClick={() =>
+              setShowLoanModal(true)
+            }
           >
             <AddIcon
               sx={{
                 fontSize: 50,
-                color: 'secondary.main',
+                color: "secondary.main",
                 mb: 2
               }}
             />
@@ -154,21 +195,32 @@ const totalExposure = activeLoans.length;
       {/* Credit Tier Modal */}
       <CreditTierCreator
         open={showTierModal}
-        onClose={() => setShowTierModal(false)}
+        onClose={() =>
+          setShowTierModal(false)
+        }
         onSuccess={refreshData}
       />
 
       {/* Loan Modal */}
       <Dialog
         open={showLoanModal}
-        onClose={() => setShowLoanModal(false)}
+        onClose={() =>
+          setShowLoanModal(false)
+        }
         maxWidth="md"
         fullWidth
       >
-        <DialogContent sx={{ p: 0, bgcolor: '#0f172a' }}>
+        <DialogContent
+          sx={{ p: 0, bgcolor: "#0f172a" }}
+        >
           <LoanCreationForm
             onSuccess={refreshData}
-            onClose={() => setShowLoanModal(false)}
+            onClose={() =>
+              setShowLoanModal(false)
+            }
+            onOpenCreditTier={() =>
+              setShowTierModal(true)
+            }
           />
         </DialogContent>
       </Dialog>
