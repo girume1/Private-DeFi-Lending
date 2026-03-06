@@ -57,6 +57,19 @@ Network: Aleo Testnet
 
 ---
 
+# 🏗 Project Structure
+```
+Private DeFi Lending/
+│
+├── frontend/           # React + Vite dApp
+├── privlend/           # Leo Smart Contract
+├── .gitignore
+├── LICENSE
+└── README.md
+```
+
+---
+
 # 🧠 Architecture
 
 ```
@@ -93,7 +106,7 @@ No financial data is exposed on-chain.
 
 ---
 
-# 🏗 Smart Contract Transitions
+# ⚙️ Smart Contract Transitions
 
 | Function | Privacy | Description |
 |----------|----------|------------|
