@@ -1,0 +1,42 @@
+# Secrets
+.env
+frontend/.env
+
+# Leo build artifacts
+*.avm
+*.prover
+*.verifier
+outputs/
+.aleo/
+
+# Tests (internal spec work)
+tests/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+
+# AI tool config folders (not for repo)
+frontend/.agent/
+frontend/.claude/
+frontend/.codebuddy/
+frontend/.codex/
+frontend/.continue/
+frontend/.cursor/
+frontend/.gemini/
+frontend/.github/
+frontend/.kiro/
+frontend/.opencode/
+frontend/.qoder/
+frontend/.roo/
+frontend/.trae/
+frontend/.windsurf/
+
+# Kiro internal
+.kiro/
+
+# OS
+.DS_Store
+Thumbs.db
