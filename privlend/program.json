@@ -1,0 +1,23 @@
+{
+  "program": "privlend_v5.aleo",
+  "version": "0.1.0",
+  "description": "",
+  "license": "MIT",
+  "leo": "4.0.0",
+  "dependencies": [
+    {
+      "name": "credits.aleo",
+      "location": "network",
+      "path": null,
+      "edition": null
+    },
+    
+    {
+      "name": "test_usdcx_stablecoin.aleo",
+      "location": "network",
+      "path": null,
+      "edition": null
+    }
+  ],
+  "dev_dependencies": null
+}
