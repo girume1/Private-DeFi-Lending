@@ -1,7 +1,7 @@
 import credits.aleo;
 import test_usdcx_stablecoin.aleo;
 
-program privlend_v5.aleo {
+program privlend_v6.aleo {
 
     @noupgrade
     constructor() {}
@@ -9,14 +9,16 @@ program privlend_v5.aleo {
     // =========================
     //         Constants
     // =========================
-    const MIN_DURATION:          u32  = 1440u32;
-    const MAX_DURATION:          u32  = 525600u32;
-    const MAX_INTEREST_BPS:      u16  = 2000u16;
-    const BASIS_POINTS_DIVISOR:  u128 = 10000u128;
-    const MIN_COLLATERAL_RATIO:  u64  = 150u64;
-    const SWAP_RATE:             u128 = 1u128;
-    const TIER_1_MIN_REPAYMENTS: u32  = 1u32;
-    const TIER_2_MIN_REPAYMENTS: u32  = 3u32;
+    const MIN_DURATION:           u32  = 1440u32;
+    const MAX_DURATION:           u32  = 525600u32;
+    const MAX_INTEREST_BPS:       u16  = 2000u16;
+    const BASIS_POINTS_DIVISOR:   u128 = 10000u128;
+    const MIN_COLLATERAL_RATIO:   u64  = 150u64;  // tier 0 default
+    const TIER_1_COLLATERAL_RATIO: u64 = 135u64;  // tier 1: 135%
+    const TIER_2_COLLATERAL_RATIO: u64 = 120u64;  // tier 2: 120%
+    const SWAP_RATE:              u128 = 1u128;
+    const TIER_1_MIN_REPAYMENTS:  u32  = 1u32;
+    const TIER_2_MIN_REPAYMENTS:  u32  = 3u32;
 
     // =========================
     //  Public on-chain mappings
@@ -92,7 +94,9 @@ program privlend_v5.aleo {
         assert(credit.owner    == borrower);
         assert(credit.tier     < 3u8);
 
-        let required: u64 = (principal as u64) * MIN_COLLATERAL_RATIO / 100u64;
+        // Tier-based collateral ratio: tier 0 = 150%, tier 1 = 135%, tier 2 = 120%
+        let ratio: u64 = credit.tier == 1u8 ? TIER_1_COLLATERAL_RATIO : (credit.tier == 2u8 ? TIER_2_COLLATERAL_RATIO : MIN_COLLATERAL_RATIO);
+        let required: u64 = (principal as u64) * ratio / 100u64;
         assert(collateral >= required);
 
         let locked_until: u32 = start_block + duration_blocks;

@@ -3,7 +3,7 @@ import merkle_tree.aleo;
 import test_usdcx_multisig_core.aleo;
 import test_usdcx_freezelist.aleo;
 import test_usdcx_stablecoin.aleo;
-program privlend_v5.aleo;
+program privlend_v6.aleo;
 
 record CreditTier:
     owner as address.private;
@@ -94,19 +94,23 @@ function open_loan:
     assert.eq r13 true;
     lt r3.tier 3u8 into r14;
     assert.eq r14 true;
-    cast r4 into r15 as u64;
-    mul r15 150u64 into r16;
-    div r16 100u64 into r17;
-    gte r5 r17 into r18;
-    assert.eq r18 true;
-    add r1 r7 into r19;
-    call credits.aleo/transfer_public_as_signer privlend_v5.aleo r5 into r20;
-    cast self.caller r2 r0 r4 r5 r3.tier r6 r1 r7 0u128 0u8 into r21 as Loan.record;
-    cast self.caller r0 r5 r19 into r22 as Collateral.record;
-    async open_loan r20 r0 self.caller r3.tier r2 r19 r4 into r23;
-    output r21 as Loan.record;
-    output r22 as Collateral.record;
-    output r23 as privlend_v5.aleo/open_loan.future;
+    is.eq r3.tier 1u8 into r15;
+    is.eq r3.tier 2u8 into r16;
+    ternary r16 120u64 150u64 into r17;
+    ternary r15 135u64 r17 into r18;
+    cast r4 into r19 as u64;
+    mul r19 r18 into r20;
+    div r20 100u64 into r21;
+    gte r5 r21 into r22;
+    assert.eq r22 true;
+    add r1 r7 into r23;
+    call credits.aleo/transfer_public_as_signer privlend_v6.aleo r5 into r24;
+    cast self.caller r2 r0 r4 r5 r3.tier r6 r1 r7 0u128 0u8 into r25 as Loan.record;
+    cast self.caller r0 r5 r23 into r26 as Collateral.record;
+    async open_loan r24 r0 self.caller r3.tier r2 r23 r4 into r27;
+    output r25 as Loan.record;
+    output r26 as Collateral.record;
+    output r27 as privlend_v6.aleo/open_loan.future;
 
 finalize open_loan:
     input r0 as credits.aleo/transfer_public_as_signer.future;
@@ -143,7 +147,7 @@ function fund_borrower:
     input r2 as u128.private;
     call test_usdcx_stablecoin.aleo/transfer_public_as_signer r1 r2 into r3;
     async fund_borrower r3 r0 self.caller r2 into r4;
-    output r4 as privlend_v5.aleo/fund_borrower.future;
+    output r4 as privlend_v6.aleo/fund_borrower.future;
 
 finalize fund_borrower:
     input r0 as test_usdcx_stablecoin.aleo/transfer_public_as_signer.future;
@@ -191,7 +195,7 @@ function repay_loan:
     cast r0.owner r0.lender r0.loan_id r0.principal r0.collateral r0.tier r0.interest_bps r0.start_block r0.duration_blocks r17 r19 into r23 as Loan.record;
     async repay_loan r21 r22 r0.loan_id self.caller r18 into r24;
     output r23 as Loan.record;
-    output r24 as privlend_v5.aleo/repay_loan.future;
+    output r24 as privlend_v6.aleo/repay_loan.future;
 
 finalize repay_loan:
     input r0 as test_usdcx_stablecoin.aleo/transfer_public_as_signer.future;
@@ -217,7 +221,7 @@ function liquidate:
     input r1 as u64.private;
     call credits.aleo/transfer_public self.caller r1 into r2;
     async liquidate r0 self.caller r2 into r3;
-    output r3 as privlend_v5.aleo/liquidate.future;
+    output r3 as privlend_v6.aleo/liquidate.future;
 
 finalize liquidate:
     input r0 as u32.public;
@@ -242,7 +246,7 @@ function release_collateral:
     input r1 as u64.private;
     call credits.aleo/transfer_public self.caller r1 into r2;
     async release_collateral r0 self.caller r2 into r3;
-    output r3 as privlend_v5.aleo/release_collateral.future;
+    output r3 as privlend_v6.aleo/release_collateral.future;
 
 finalize release_collateral:
     input r0 as u32.public;
@@ -266,10 +270,10 @@ function swap_credits_for_usdcx:
     mul r3 1u128 into r4;
     gte r4 r1 into r5;
     assert.eq r5 true;
-    call credits.aleo/transfer_public_as_signer privlend_v5.aleo r0 into r6;
+    call credits.aleo/transfer_public_as_signer privlend_v6.aleo r0 into r6;
     call test_usdcx_stablecoin.aleo/transfer_public self.caller r4 into r7;
     async swap_credits_for_usdcx r6 r7 into r8;
-    output r8 as privlend_v5.aleo/swap_credits_for_usdcx.future;
+    output r8 as privlend_v6.aleo/swap_credits_for_usdcx.future;
 
 finalize swap_credits_for_usdcx:
     input r0 as credits.aleo/transfer_public_as_signer.future;
@@ -286,10 +290,10 @@ function swap_usdcx_for_credits:
     div r3 1u64 into r4;
     gte r4 r1 into r5;
     assert.eq r5 true;
-    call test_usdcx_stablecoin.aleo/transfer_public_as_signer privlend_v5.aleo r0 into r6;
+    call test_usdcx_stablecoin.aleo/transfer_public_as_signer privlend_v6.aleo r0 into r6;
     call credits.aleo/transfer_public self.caller r4 into r7;
     async swap_usdcx_for_credits r6 r7 into r8;
-    output r8 as privlend_v5.aleo/swap_usdcx_for_credits.future;
+    output r8 as privlend_v6.aleo/swap_usdcx_for_credits.future;
 
 finalize swap_usdcx_for_credits:
     input r0 as test_usdcx_stablecoin.aleo/transfer_public_as_signer.future;
