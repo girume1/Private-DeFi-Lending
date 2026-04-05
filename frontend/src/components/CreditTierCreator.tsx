@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, FormControl, InputLabel, Select,
-  MenuItem, Typography, Box, Chip, Alert, SelectChangeEvent, CircularProgress } from '@mui/material';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  Box,
+  Chip,
+  Alert,
+  SelectChangeEvent,
+  CircularProgress,
+} from "@mui/material";
 import {
   Grade as GradeIcon,
   Security as SecurityIcon,
-  CheckCircle as CheckIcon
-} from '@mui/icons-material';
-import { useWallet } from '@provablehq/aleo-wallet-adaptor-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PROGRAM_ID } from '../utils/aleo';
-import toast from 'react-hot-toast';
+  CheckCircle as CheckIcon,
+} from "@mui/icons-material";
+import { useWallet } from "@provablehq/aleo-wallet-adaptor-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { PROGRAM_ID } from "../utils/aleo";
+import toast from "react-hot-toast";
 
 interface Props {
   open: boolean;
@@ -25,33 +40,29 @@ interface TierInfo {
 
 const tierInfo: Record<number, TierInfo> = {
   0: {
-    name: 'Tier A',
-    color: '#10b981',
-    description: 'Best rates (0-5% APR), highest borrowing power.'
+    name: "Tier A",
+    color: "#10b981",
+    description: "Best rates (0-5% APR), highest borrowing power.",
   },
   1: {
-    name: 'Tier B',
-    color: '#f59e0b',
-    description: 'Good rates (5-10% APR), standard borrowing.'
+    name: "Tier B",
+    color: "#f59e0b",
+    description: "Good rates (5-10% APR), standard borrowing.",
   },
   2: {
-    name: 'Tier C',
-    color: '#ef4444',
-    description: 'Higher risk (10-20% APR), limited borrowing.'
-  }
+    name: "Tier C",
+    color: "#ef4444",
+    description: "Higher risk (10-20% APR), limited borrowing.",
+  },
 };
 
 export const CreditTierCreator: React.FC<Props> = ({
   open,
   onClose,
-  onSuccess
+  onSuccess,
 }) => {
-  const {
-    connected,
-    address,
-    executeTransaction,
-    transactionStatus
-  } = useWallet();
+  const { connected, address, executeTransaction, transactionStatus } =
+    useWallet();
 
   const [selectedTier, setSelectedTier] = useState<0 | 1 | 2>(0);
   const [loading, setLoading] = useState(false);
@@ -64,13 +75,13 @@ export const CreditTierCreator: React.FC<Props> = ({
   const generateNonce = (): string => {
     const randomBytes = crypto.getRandomValues(new Uint8Array(16));
     const hex = Array.from(randomBytes)
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-    return `${BigInt('0x' + hex)}field`;
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return `${BigInt("0x" + hex)}field`;
   };
 
   const waitForConfirmation = (txId: string): Promise<boolean> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let attempts = 0;
       const MAX_ATTEMPTS = 20;
       const interval = setInterval(async () => {
@@ -78,15 +89,24 @@ export const CreditTierCreator: React.FC<Props> = ({
         try {
           const res = await transactionStatus(txId);
           // transactionStatus may return a plain string or an object — handle both
-          const s = (typeof res === 'string' ? res : (res as any)?.status ?? '')
-            .toLowerCase();
+          const s = (
+            typeof res === "string" ? res : ((res as any)?.status ?? "")
+          ).toLowerCase();
 
-          if (s.includes('accepted') || s.includes('completed') || s.includes('finalized')) {
+          if (
+            s.includes("accepted") ||
+            s.includes("completed") ||
+            s.includes("finalized")
+          ) {
             clearInterval(interval);
             resolve(true);
             return;
           }
-          if (s.includes('failed') || s.includes('rejected') || s.includes('aborted')) {
+          if (
+            s.includes("failed") ||
+            s.includes("rejected") ||
+            s.includes("aborted")
+          ) {
             clearInterval(interval);
             resolve(false);
             return;
@@ -97,7 +117,7 @@ export const CreditTierCreator: React.FC<Props> = ({
           }
         } catch (e) {
           // Transient network error — keep polling, don't fail immediately
-          console.warn('[CreditTier] Polling error (will retry):', e);
+          console.warn("[CreditTier] Polling error (will retry):", e);
           if (attempts >= MAX_ATTEMPTS) {
             clearInterval(interval);
             resolve(false);
@@ -109,7 +129,7 @@ export const CreditTierCreator: React.FC<Props> = ({
 
   const handleCreate = async () => {
     if (!connected || !address) {
-      toast.error('Please connect your wallet first');
+      toast.error("Please connect your wallet first");
       return;
     }
 
@@ -123,9 +143,9 @@ export const CreditTierCreator: React.FC<Props> = ({
         program: PROGRAM_ID,
         function: "create_credit_tier",
         inputs: [
-          address,             // receiver — must equal self.caller (assert_eq enforced on-chain)
+          address, // receiver — must equal self.caller (assert_eq enforced on-chain)
           `${selectedTier}u8`, // tier: 0=A, 1=B, 2=C
-          nonce,               // field — random uniqueness seed
+          nonce, // field — random uniqueness seed
         ],
         fee: 150_000,
         privateFee: false,
@@ -148,7 +168,6 @@ export const CreditTierCreator: React.FC<Props> = ({
         if (onSuccess) onSuccess();
         onClose();
       }, 2000);
-
     } catch (err: any) {
       toast.error(err.message || "Failed to create credit tier");
       setStep(1);
@@ -165,14 +184,14 @@ export const CreditTierCreator: React.FC<Props> = ({
       fullWidth
       PaperProps={{
         sx: {
-          background: 'linear-gradient(135deg, #1e293b, #0f172a)',
-          border: '1px solid #334155',
-          borderRadius: 4
-        }
+          background: "linear-gradient(135deg, #1e293b, #0f172a)",
+          border: "1px solid #334155",
+          borderRadius: 4,
+        },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>
-        <SecurityIcon sx={{ fontSize: 60, color: 'primary.main', mb: 1 }} />
+      <DialogTitle sx={{ textAlign: "center" }}>
+        <SecurityIcon sx={{ fontSize: 60, color: "primary.main", mb: 1 }} />
         <Typography variant="h4" fontWeight="bold">
           Create Credit Tier
         </Typography>
@@ -180,7 +199,6 @@ export const CreditTierCreator: React.FC<Props> = ({
 
       <DialogContent>
         <AnimatePresence mode="wait">
-
           {step === 1 && (
             <motion.div
               key="select"
@@ -200,9 +218,15 @@ export const CreditTierCreator: React.FC<Props> = ({
                         <GradeIcon sx={{ color: tierInfo[t].color }} />
                         {tierInfo[t].name}
                         <Chip
-                          label={t === 0 ? "Elite" : t === 1 ? "Standard" : "Starter"}
+                          label={
+                            t === 0 ? "Elite" : t === 1 ? "Standard" : "Starter"
+                          }
                           size="small"
-                          sx={{ bgcolor: tierInfo[t].color, color: 'white', ml: 1 }}
+                          sx={{
+                            bgcolor: tierInfo[t].color,
+                            color: "white",
+                            ml: 1,
+                          }}
                         />
                       </Box>
                     </MenuItem>
@@ -210,10 +234,7 @@ export const CreditTierCreator: React.FC<Props> = ({
                 </Select>
               </FormControl>
 
-              <Alert
-                severity="info"
-                sx={{ mt: 3 }}
-              >
+              <Alert severity="info" sx={{ mt: 3 }}>
                 {tierInfo[selectedTier].description}
               </Alert>
             </motion.div>
@@ -224,12 +245,10 @@ export const CreditTierCreator: React.FC<Props> = ({
               key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              style={{ textAlign: 'center', padding: '2rem' }}
+              style={{ textAlign: "center", padding: "2rem" }}
             >
               <CircularProgress size={60} />
-              <Typography mt={2}>
-                Processing Private Proof...
-              </Typography>
+              <Typography mt={2}>Processing Private Proof...</Typography>
             </motion.div>
           )}
 
@@ -238,15 +257,14 @@ export const CreditTierCreator: React.FC<Props> = ({
               key="success"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              style={{ textAlign: 'center', padding: '2rem' }}
+              style={{ textAlign: "center", padding: "2rem" }}
             >
-              <CheckIcon sx={{ fontSize: 80, color: 'success.main' }} />
+              <CheckIcon sx={{ fontSize: 80, color: "success.main" }} />
               <Typography mt={2} color="success.main">
                 Credit Tier Confirmed!
               </Typography>
             </motion.div>
           )}
-
         </AnimatePresence>
       </DialogContent>
 

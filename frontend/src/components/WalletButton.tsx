@@ -1,8 +1,8 @@
-import React from 'react';
-import { useWallet } from '@provablehq/aleo-wallet-adaptor-react';
-import { WalletMultiButton } from '@provablehq/aleo-wallet-adaptor-react-ui';
-import { Box, Chip } from '@mui/material';
-import { motion } from 'framer-motion';
+import React from "react";
+import { useWallet } from "@provablehq/aleo-wallet-adaptor-react";
+import { WalletMultiButton } from "@provablehq/aleo-wallet-adaptor-react-ui";
+import { Box, Chip } from "@mui/material";
+import { motion } from "framer-motion";
 
 export const WalletButton: React.FC = () => {
   const { connected, address } = useWallet();
@@ -12,7 +12,7 @@ export const WalletButton: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
       {connected && address && (
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -23,10 +23,10 @@ export const WalletButton: React.FC = () => {
             size="small"
             color="success"
             variant="outlined"
-            sx={{ 
-              borderColor: '#10b981',
-              color: '#10b981',
-              '& .MuiChip-label': { fontWeight: 500 }
+            sx={{
+              borderColor: "#10b981",
+              color: "#10b981",
+              "& .MuiChip-label": { fontWeight: 500 },
             }}
           />
         </motion.div>

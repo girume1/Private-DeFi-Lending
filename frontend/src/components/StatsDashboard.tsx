@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react';
-import { Grid, Paper, Typography, Box } from '@mui/material';
+import React, { useMemo } from "react";
+import { Grid, Paper, Typography, Box } from "@mui/material";
 import {
   ShowChart as ChartIcon,
   AccountBalance as LoanIcon,
   TrendingUp as TrendingIcon,
   Security as SecurityIcon,
-  Warning as WarningIcon
-} from '@mui/icons-material';
-import { motion } from 'framer-motion';
-import { usePrivLend } from '../context/PrivLendContext';
-import CountUp from 'react-countup';
+  Warning as WarningIcon,
+} from "@mui/icons-material";
+import { motion } from "framer-motion";
+import { usePrivLend } from "../context/PrivLendContext";
+import CountUp from "react-countup";
 
 interface StatCardProps {
   title: string;
@@ -24,7 +24,7 @@ const StatCard: React.FC<StatCardProps> = ({
   value,
   icon,
   color,
-  suffix = ''
+  suffix = "",
 }) => (
   <motion.div whileHover={{ y: -5 }}>
     <Paper
@@ -33,7 +33,7 @@ const StatCard: React.FC<StatCardProps> = ({
         background: `linear-gradient(135deg, ${color}20, ${color}05)`,
         border: `1px solid ${color}40`,
         borderRadius: 4,
-        height: '100%'
+        height: "100%",
       }}
     >
       <Box
@@ -60,51 +60,47 @@ export const StatsDashboard: React.FC = () => {
   const { stats, currentBlock, allPublicLoans } = usePrivLend();
 
   const liquidationRisk = useMemo(() => {
-    const activeLoans = allPublicLoans.filter(l => l.active);
+    const activeLoans = allPublicLoans.filter((l) => l.active);
     if (activeLoans.length === 0) return 0;
 
-    const expired = activeLoans.filter(
-      l => currentBlock > l.deadline
-    ).length;
+    const expired = activeLoans.filter((l) => currentBlock > l.deadline).length;
 
-    return Math.round(
-      (expired / activeLoans.length) * 100
-    );
+    return Math.round((expired / activeLoans.length) * 100);
   }, [allPublicLoans, currentBlock]);
 
   const statCards = [
     {
-      title: 'Total Loans',
+      title: "Total Loans",
       value: stats.totalLoans,
       icon: <LoanIcon sx={{ fontSize: 40 }} />,
-      color: '#F59E0B'
+      color: "#F59E0B",
     },
     {
-      title: 'Active Loans',
+      title: "Active Loans",
       value: stats.activeLoans,
       icon: <TrendingIcon sx={{ fontSize: 40 }} />,
-      color: '#10b981'
+      color: "#10b981",
     },
     {
-      title: 'Liquidation Risk',
+      title: "Liquidation Risk",
       value: liquidationRisk,
       icon: <WarningIcon sx={{ fontSize: 40 }} />,
-      color: '#ef4444',
-      suffix: '%'
+      color: "#ef4444",
+      suffix: "%",
     },
     {
-      title: 'Current Block',
+      title: "Current Block",
       value: currentBlock,
       icon: <SecurityIcon sx={{ fontSize: 40 }} />,
-      color: '#8b5cf6'
+      color: "#8b5cf6",
     },
     {
-      title: 'Avg Interest',
+      title: "Avg Interest",
       value: stats.avgInterestRate,
       icon: <ChartIcon sx={{ fontSize: 40 }} />,
-      color: '#f59e0b',
-      suffix: '%'
-    }
+      color: "#f59e0b",
+      suffix: "%",
+    },
   ];
 
   return (

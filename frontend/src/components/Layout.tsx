@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Container, useTheme } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { Box, Container, useTheme } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,23 +12,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: "100vh",
         background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, #1e1b4b 100%)`,
-        position: 'relative',
-        overflow: 'hidden',
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       {/* Animated Background Elements */}
       <Box
         sx={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
           zIndex: 0,
-          overflow: 'hidden',
-          pointerEvents: 'none',
+          overflow: "hidden",
+          pointerEvents: "none",
         }}
       >
         {/* Floating Gradient Orbs */}
@@ -40,20 +40,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           style={{
-            position: 'absolute',
-            top: '10%',
-            left: '5%',
-            width: '300px',
-            height: '300px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0) 70%)',
-            filter: 'blur(40px)',
+            position: "absolute",
+            top: "10%",
+            left: "5%",
+            width: "300px",
+            height: "300px",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0) 70%)",
+            filter: "blur(40px)",
           }}
         />
-        
+
         <motion.div
           animate={{
             x: [0, -100, 0],
@@ -62,24 +63,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           style={{
-            position: 'absolute',
-            bottom: '10%',
-            right: '5%',
-            width: '400px',
-            height: '400px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0) 70%)',
-            filter: 'blur(50px)',
+            position: "absolute",
+            bottom: "10%",
+            right: "5%",
+            width: "400px",
+            height: "400px",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0) 70%)",
+            filter: "blur(50px)",
           }}
         />
 
         {/* Grid Pattern */}
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
@@ -88,7 +90,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
               linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px',
+            backgroundSize: "50px 50px",
           }}
         />
       </Box>
@@ -97,7 +99,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Container
         maxWidth="xl"
         sx={{
-          position: 'relative',
+          position: "relative",
           zIndex: 1,
           py: 4,
         }}
@@ -119,13 +121,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Box
         component="footer"
         sx={{
-          position: 'relative',
+          position: "relative",
           zIndex: 1,
           mt: 8,
           py: 3,
-          textAlign: 'center',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-          backdropFilter: 'blur(10px)',
+          textAlign: "center",
+          borderTop: "1px solid rgba(255,255,255,0.1)",
+          backdropFilter: "blur(10px)",
         }}
       >
         <Container maxWidth="xl">
@@ -137,11 +139,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Box
               component="span"
               sx={{
-                color: 'text.secondary',
-                fontSize: '0.875rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                color: "text.secondary",
+                fontSize: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 gap: 1,
               }}
             >
@@ -152,8 +154,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Box
               sx={{
                 mt: 1,
-                color: 'text.disabled',
-                fontSize: '0.75rem',
+                color: "text.disabled",
+                fontSize: "0.75rem",
               }}
             >
               © 2026 PrivLend. All rights reserved.

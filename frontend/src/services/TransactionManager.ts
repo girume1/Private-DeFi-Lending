@@ -27,16 +27,23 @@ export class TransactionManager {
 
       const list: any[] = Array.isArray(data)
         ? data
-        : Array.isArray(data.value) ? data.value
-        : [];
+        : Array.isArray(data.value)
+          ? data.value
+          : [];
 
-      return list.map(tx => ({
-        id:          tx.transaction_id ?? tx.id ?? "",
-        type:        this.mapFunctionName(tx.function_id ?? tx.functionName ?? tx.function),
-        status:      this.mapStatus(tx.status),
-        timestamp:   tx.block_timestamp ? Number(tx.block_timestamp) * 1000 : Date.now(),
-        blockNumber: tx.block_number,
-      })).filter(tx => tx.id);
+      return list
+        .map((tx) => ({
+          id: tx.transaction_id ?? tx.id ?? "",
+          type: this.mapFunctionName(
+            tx.function_id ?? tx.functionName ?? tx.function,
+          ),
+          status: this.mapStatus(tx.status),
+          timestamp: tx.block_timestamp
+            ? Number(tx.block_timestamp) * 1000
+            : Date.now(),
+          blockNumber: tx.block_number,
+        }))
+        .filter((tx) => tx.id);
     } catch {
       return [];
     }
@@ -51,17 +58,24 @@ export class TransactionManager {
 
       const txList: any[] = Array.isArray(history)
         ? history
-        : Array.isArray(history.transactions) ? history.transactions
-        : Array.isArray(history.items)         ? history.items
-        : Array.isArray(history.data)          ? history.data
-        : [];
+        : Array.isArray(history.transactions)
+          ? history.transactions
+          : Array.isArray(history.items)
+            ? history.items
+            : Array.isArray(history.data)
+              ? history.data
+              : [];
 
-      return txList.map(tx => ({
-        id:        tx.transactionId ?? tx.id ?? tx.txId ?? "",
-        type:      this.mapFunctionName(tx.functionName ?? tx.function ?? tx.transition),
-        status:    this.mapStatus(tx.status ?? tx.state),
-        timestamp: tx.timestamp != null ? Number(tx.timestamp) : Date.now(),
-      })).filter(tx => tx.id);
+      return txList
+        .map((tx) => ({
+          id: tx.transactionId ?? tx.id ?? tx.txId ?? "",
+          type: this.mapFunctionName(
+            tx.functionName ?? tx.function ?? tx.transition,
+          ),
+          status: this.mapStatus(tx.status ?? tx.state),
+          timestamp: tx.timestamp != null ? Number(tx.timestamp) : Date.now(),
+        }))
+        .filter((tx) => tx.id);
     } catch {
       return [];
     }
@@ -82,21 +96,29 @@ export class TransactionManager {
 
   private mapStatus(status: any): TxStatus {
     const s = String(status ?? "").toLowerCase();
-    if (s.includes("accepted") || s.includes("completed") || s.includes("finalized")) return "Completed";
-    if (s.includes("failed")   || s.includes("rejected")  || s.includes("aborted"))   return "Failed";
+    if (
+      s.includes("accepted") ||
+      s.includes("completed") ||
+      s.includes("finalized")
+    )
+      return "Completed";
+    if (s.includes("failed") || s.includes("rejected") || s.includes("aborted"))
+      return "Failed";
     return "Pending";
   }
 
   private mapFunctionName(fn?: string): string {
     if (!fn) return "Unknown";
-    if (fn.includes("create_credit_tier"))     return "Create Credit Tier";
-    if (fn.includes("open_loan"))              return "Open Loan";
-    if (fn.includes("fund_borrower"))          return "Fund Borrower";
-    if (fn.includes("repay_loan"))             return "Repay Loan";
-    if (fn.includes("liquidate"))              return "Liquidate";
-    if (fn.includes("release_collateral"))     return "Release Collateral";
-    if (fn.includes("swap_credits_for_usdcx")) return "Swap Credits \u2192 USDCx";
-    if (fn.includes("swap_usdcx_for_credits")) return "Swap USDCx \u2192 Credits";
+    if (fn.includes("create_credit_tier")) return "Create Credit Tier";
+    if (fn.includes("open_loan")) return "Open Loan";
+    if (fn.includes("fund_borrower")) return "Fund Borrower";
+    if (fn.includes("repay_loan")) return "Repay Loan";
+    if (fn.includes("liquidate")) return "Liquidate";
+    if (fn.includes("release_collateral")) return "Release Collateral";
+    if (fn.includes("swap_credits_for_usdcx"))
+      return "Swap Credits \u2192 USDCx";
+    if (fn.includes("swap_usdcx_for_credits"))
+      return "Swap USDCx \u2192 Credits";
     return fn;
   }
 }

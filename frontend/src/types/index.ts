@@ -10,21 +10,21 @@ export interface Loan {
   owner: string;
   lender: string;
   loan_id: number;
-  principal: bigint;      // u128 - USDCx
-  collateral: bigint;      // u64 - microcredits
+  principal: bigint; // u128 - USDCx
+  collateral: bigint; // u64 - microcredits
   tier: 0 | 1 | 2;
   interest_bps: number;
   start_block: number;
   duration_blocks: number;
-  repaid: bigint;          // u128 - USDCx repaid
-  status: 0 | 2 | 3;       // 0=active, 2=repaid, 3=liquidated
+  repaid: bigint; // u128 - USDCx repaid
+  status: 0 | 2 | 3; // 0=active, 2=repaid, 3=liquidated
 }
 
 // Collateral Record
 export interface Collateral {
   owner: string;
   loan_id: number;
-  amount: bigint;          // u64 - microcredits
+  amount: bigint; // u64 - microcredits
   locked_until: number;
 }
 
@@ -33,9 +33,9 @@ export interface LoanPublic {
   loan_id: number;
   active: boolean;
   owner: string;
-  lender: string;           
+  lender: string;
   deadline: number;
-  collateral_locked: boolean; 
+  collateral_locked: boolean;
 }
 
 // On-chain repayment count (from repayment_count mapping)
@@ -50,14 +50,14 @@ export interface LoanPrincipalRecord {
   principal: bigint; // u128
 }
 
-// Network Statistics 
+// Network Statistics
 export interface NetworkStats {
   totalLoans: number;
   activeLoans: number;
-  totalVolumeUSDCx: bigint;  // Track both tokens
+  totalVolumeUSDCx: bigint; // Track both tokens
   totalVolumeCredits: bigint;
-  tvlUSDCx: bigint;          // Total Value Locked in USDCx
-  tvlCredits: bigint;        // Total Value Locked in microcredits
+  tvlUSDCx: bigint; // Total Value Locked in USDCx
+  tvlCredits: bigint; // Total Value Locked in microcredits
   avgInterestRate: number;
 }
 
@@ -71,7 +71,7 @@ export interface TokenBalances {
 export interface SwapFormData {
   amountIn: bigint;
   minOut: bigint;
-  direction: 'credits-to-usdcx' | 'usdcx-to-credits';
+  direction: "credits-to-usdcx" | "usdcx-to-credits";
 }
 
 // Transaction Request
@@ -93,8 +93,8 @@ export interface WalletState {
 // Form Data Types (v2)
 export interface CreateLoanFormData {
   lender: string;
-  principal: bigint;        // USDCx amount
-  collateral: bigint;        // microcredits amount
+  principal: bigint; // USDCx amount
+  collateral: bigint; // microcredits amount
   interest_bps: number;
   duration_blocks: number;
   credit_tier_nonce: string;
@@ -123,8 +123,8 @@ export interface WalletButtonProps {
 export interface LenderPosition {
   loan_id: number;
   borrower: string;
-  principal: bigint;        // USDCx lent
+  principal: bigint; // USDCx lent
   interest_bps: number;
   deadline: number;
-  status: 'active' | 'repaid' | 'liquidated';
+  status: "active" | "repaid" | "liquidated";
 }
