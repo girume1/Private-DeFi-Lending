@@ -1,5 +1,5 @@
 /**
- * PrivLend v6 — Liquidation Bot
+ * PrivLend v8 — Liquidation Bot
  *
  * Polls the Aleo testnet for expired loans and prints liquidation candidates.
  * Run with: npx ts-node --project scripts/tsconfig.json scripts/liquidation-bot.ts
@@ -10,14 +10,15 @@
 
 const API      = process.env.ALEO_API      ?? 'https://api.explorer.provable.com/v2';
 const NETWORK  = process.env.ALEO_NETWORK  ?? 'testnet';
-const PROGRAM  = process.env.PROGRAM_ID    ?? 'privlend_v6.aleo';
+const PROGRAM  = process.env.PROGRAM_ID    ?? 'privlend_v8.aleo';
 const INTERVAL = Number(process.env.POLL_INTERVAL_MS ?? '30000'); // 30s default
 
 interface ExpiredLoan {
-  loan_id:  number;
-  owner:    string;
-  lender:   string;
-  deadline: number;
+  loan_id:   number;
+  owner:     string;
+  lender:    string;
+  deadline:  number;
+  col_amount: number;
 }
 
 async function fetchMapping(mapping: string, key: string): Promise<string | null> {
@@ -57,11 +58,12 @@ async function scanExpiredLoans(currentBlock: number, totalLoans: number): Promi
     const loan_id = i + 1;
     const id      = `${loan_id}u32`;
 
-    const [active, deadline, owner, lender] = await Promise.all([
-      fetchMapping('loan_active',   id),
-      fetchMapping('loan_deadline', id),
-      fetchMapping('loan_owner',    id),
-      fetchMapping('loan_lender',   id),
+    const [active, deadline, owner, lender, collateral] = await Promise.all([
+      fetchMapping('loan_active',     id),
+      fetchMapping('loan_deadline',   id),
+      fetchMapping('loan_owner',      id),
+      fetchMapping('loan_lender',     id),
+      fetchMapping('loan_collateral', id),  // v8: exact amount stored publicly
     ]);
 
     if (active !== 'true') return;
@@ -69,11 +71,14 @@ async function scanExpiredLoans(currentBlock: number, totalLoans: number): Promi
     const deadlineBlock = parseInt((deadline ?? '0').replace(/u32$/i, ''), 10);
     if (isNaN(deadlineBlock) || currentBlock < deadlineBlock) return;
 
+    const colAmount = collateral ? parseInt(collateral.replace(/u64$/i, ''), 10) : 0;
+
     expired.push({
       loan_id,
-      owner:    owner  ?? 'unknown',
-      lender:   lender ?? 'unknown',
-      deadline: deadlineBlock,
+      owner:      owner  ?? 'unknown',
+      lender:     lender ?? 'unknown',
+      deadline:   deadlineBlock,
+      col_amount: isNaN(colAmount) ? 0 : colAmount,
     });
   });
 
@@ -83,7 +88,7 @@ async function scanExpiredLoans(currentBlock: number, totalLoans: number): Promi
 
 async function runBot(): Promise<void> {
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`PrivLend v6 Liquidation Bot — ${new Date().toLocaleTimeString()}`);
+  console.log(`PrivLend v8 Liquidation Bot — ${new Date().toLocaleTimeString()}`);
   console.log(`Program: ${PROGRAM} | Network: ${NETWORK}`);
   console.log('='.repeat(60));
 
@@ -119,12 +124,16 @@ async function runBot(): Promise<void> {
     console.log();
   }
 
-  console.log('--- Liquidation Command (dry-run) ---');
-  console.log('To liquidate, call:');
+  console.log('--- Liquidation Commands (dry-run) ---');
+  console.log('To liquidate, run these commands as the lender:');
   for (const loan of expired) {
-    console.log(`  leo execute liquidate ${loan.loan_id}u32 <col_amount>u64 --network ${NETWORK}`);
+    if (loan.col_amount > 0) {
+      console.log(`  leo execute liquidate ${loan.loan_id}u32 ${loan.col_amount}u64 --network ${NETWORK} --program ${PROGRAM}`);
+    } else {
+      console.log(`  leo execute liquidate ${loan.loan_id}u32 <col_amount>u64 --network ${NETWORK} --program ${PROGRAM}`);
+      console.log(`  (Could not read col_amount for loan #${loan.loan_id} — check loan_collateral mapping manually)`);
+    }
   }
-  console.log('\nNote: Replace <col_amount> with the actual collateral amount from the borrower\'s Collateral record.');
 }
 
 // Run once immediately, then poll
