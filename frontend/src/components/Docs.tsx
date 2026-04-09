@@ -189,7 +189,7 @@ export const Docs: React.FC<DocsProps> = ({
       color: "#8B5CF6",
       title: "On-Chain Credit Tiers",
       description:
-        "v6 enforces credit tier eligibility on-chain. Tier 1 requires ≥1 repayment, Tier 2 requires ≥3. No more self-asserted tiers.",
+        "v8 enforces credit tier eligibility on-chain. Tier 1 requires ≥1 repayment, Tier 2 requires ≥3. No more self-asserted tiers.",
     },
     {
       icon: <TrendingIcon />,
@@ -252,7 +252,7 @@ export const Docs: React.FC<DocsProps> = ({
     {
       name: "Loan",
       color: "#8B5CF6",
-      description: "Encrypted loan record with all terms (v6)",
+      description: "Encrypted loan record with all terms (v8)",
       fields: [
         "owner: address",
         "lender: address",
@@ -281,8 +281,8 @@ export const Docs: React.FC<DocsProps> = ({
 
   const faqs = [
     {
-      q: "What's new in v6?",
-      a: "v6 Fixes four protocol bugs from Wave 4 judges: on-chain credit tier enforcement, fund_borrower amount verification, collateral privacy (bool instead of u64 in public mapping), and time-based interest with partial repayment support.",
+      q: "What's new in v8?",
+      a: "v8 Fixes four protocol bugs from Wave 4 judges: on-chain credit tier enforcement, fund_borrower amount verification, collateral privacy (bool instead of u64 in public mapping), and time-based interest with partial repayment support.",
     },
     {
       q: "How does time-based interest work?",
@@ -290,11 +290,11 @@ export const Docs: React.FC<DocsProps> = ({
     },
     {
       q: "Can I make partial payments?",
-      a: "Yes. v6 accepts any payment > 0 as long as repaid + payment ≤ total_due. The loan stays active until fully cleared, then collateral is released.",
+      a: "Yes. v8 accepts any payment > 0 as long as repaid + payment ≤ total_due. The loan stays active until fully cleared, then collateral is released.",
     },
     {
       q: "Why is collateral_locked now a bool?",
-      a: "In v4, storing the exact u64 collateral amount publicly let observers infer the private principal (principal ≤ collateral / 1.5). v6 stores only true/false, preserving privacy.",
+      a: "In v4, storing the exact u64 collateral amount publicly let observers infer the private principal (principal ≤ collateral / 1.5). v8 stores only true/false, preserving privacy.",
     },
     {
       q: "What wallets are supported?",
@@ -326,17 +326,17 @@ export const Docs: React.FC<DocsProps> = ({
     {
       name: "collateral_locked",
       type: "u32 → bool",
-      desc: "Presence flag only — no amount leaked (v6)",
+      desc: "Presence flag only — no amount leaked (v8)",
     },
     {
       name: "loan_principal",
       type: "u32 → u128",
-      desc: "Agreed principal for fund_borrower verification (v6)",
+      desc: "Agreed principal for fund_borrower verification (v8)",
     },
     {
       name: "repayment_count",
       type: "address → u32",
-      desc: "On-chain repayment history for tier enforcement (v6)",
+      desc: "On-chain repayment history for tier enforcement (v8)",
     },
     {
       name: "loan_counter",
@@ -362,7 +362,7 @@ export const Docs: React.FC<DocsProps> = ({
               Quick Docs
             </Typography>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)" }}>
-              PrivLend v6 — private DeFi lending on Aleo with on-chain credit
+              PrivLend v8 — private DeFi lending on Aleo with on-chain credit
               enforcement and time-based interest.
             </Typography>
           </Box>
@@ -488,7 +488,7 @@ export const Docs: React.FC<DocsProps> = ({
                     mb: 1,
                   }}
                 >
-                  PrivLend v6 Docs
+                  PrivLend v8 Docs
                 </Typography>
                 <Typography
                   variant="h6"
@@ -601,7 +601,7 @@ export const Docs: React.FC<DocsProps> = ({
                 variant="subtitle1"
                 sx={{ color: "white", fontWeight: 700, mb: 3 }}
               >
-                Private Records (v6)
+                Private Records (v8)
               </Typography>
               {records.map((r, i) => (
                 <motion.div
@@ -754,11 +754,11 @@ export const Docs: React.FC<DocsProps> = ({
                 variant="subtitle2"
                 sx={{ color: "#10b981", mb: 2, fontFamily: "monospace" }}
               >
-                // Open Loan (v6)
+                // Open Loan (v8)
               </Typography>
               <CodeBlock
                 code={`executeTransaction({
-  program: "privlend_v6.aleo",
+  program: "privlend_v8.aleo",
   function: "open_loan",
   inputs: [
     "1u32",                 // loan_id
@@ -781,15 +781,15 @@ export const Docs: React.FC<DocsProps> = ({
                 variant="subtitle2"
                 sx={{ color: "#F59E0B", mb: 2, fontFamily: "monospace" }}
               >
-                // Repay Loan — partial payment (v6)
+                // Repay Loan — partial payment (v8)
               </Typography>
               <CodeBlock
                 code={`executeTransaction({
-  program: "privlend_v6.aleo",
+  program: "privlend_v8.aleo",
   function: "repay_loan",
   inputs: [
     "{loan_record}",  // private Loan record
-    "500u128",        // payment (partial ok in v6)
+    "500u128",        // payment (partial ok in v8)
     "100500u32"       // current_block (for time interest)
   ],
   fee: 300_000
@@ -803,7 +803,7 @@ export const Docs: React.FC<DocsProps> = ({
           </Grid>
         </Grid>
 
-        {/* v6 Changes callout */}
+        {/* v8 Changes callout */}
         <Paper
           sx={{
             p: 3,
@@ -823,7 +823,7 @@ export const Docs: React.FC<DocsProps> = ({
               fontSize: "1rem",
             }}
           >
-            What Changed in v6
+            What Changed in v8
           </Typography>
           <Grid container spacing={2}>
             {[
@@ -1041,7 +1041,7 @@ export const Docs: React.FC<DocsProps> = ({
               fontSize: "1rem",
             }}
           >
-            Ready to try PrivLend v6?
+            Ready to try PrivLend v8?
           </Typography>
           <Typography
             variant="body2"

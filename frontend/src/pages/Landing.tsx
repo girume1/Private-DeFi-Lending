@@ -338,7 +338,7 @@ const LoanDiagram: React.FC = () => (
         label: "PROTOCOL",
         icon: "🔒",
         color: "#8b5cf6",
-        sub: "privlend_v6.aleo",
+        sub: "privlend_v8.aleo",
       },
       { label: "LENDER", icon: "🏦", color: "#10b981", sub: "Funds USDCx" },
     ].map((p, i) => (

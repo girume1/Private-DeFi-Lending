@@ -1,7 +1,7 @@
 import credits.aleo;
 import test_usdcx_stablecoin.aleo;
 
-program privlend_v6.aleo {
+program privlend_v8.aleo {
 
     @noupgrade
     constructor() {}
@@ -31,6 +31,7 @@ program privlend_v6.aleo {
     mapping collateral_locked: u32     => bool;
     mapping repayment_count:   address => u32;
     mapping loan_principal:    u32     => u128;
+    mapping loan_collateral:   u32     => u64;   // stores actual collateral amount for liquidation verification
 
     // =========================
     //       Private records
@@ -143,6 +144,7 @@ program privlend_v6.aleo {
             loan_deadline.set(loan_id,     locked_until);
             collateral_locked.set(loan_id, true);
             loan_principal.set(loan_id,    principal);
+            loan_collateral.set(loan_id,   collateral);
 
             let current: u32 = loan_counter.get_or_use(0u32, 0u32);
             loan_counter.set(0u32, current + 1u32);
@@ -172,37 +174,29 @@ program privlend_v6.aleo {
     }
 
     // ----------------------------------------------------------------
-    // 4) Repay loan
+    // 4a) Repay loan — partial payment (does NOT release collateral)
+    //     Use when payment < total_due. Collateral stays locked.
     // ----------------------------------------------------------------
-    fn repay_loan(loan: Loan, payment: u128, current_block: u32) -> (Loan, Final) {
-        let borrower: address  = self.caller;
-        let lender: address    = loan.lender;
-        let loan_id: u32       = loan.loan_id;
-        let collateral: u64    = loan.collateral;
+    fn repay_partial(loan: Loan, payment: u128, current_block: u32) -> (Loan, Final) {
+        let borrower: address = self.caller;
+        let lender: address   = loan.lender;
+        let loan_id: u32      = loan.loan_id;
 
         assert(loan.status == 0u8);
         assert(borrower    == loan.owner);
+        assert(payment     > 0u128);
 
-        // Time-based interest: proportional to elapsed blocks
+        // Time-based interest
         let elapsed: u32          = current_block - loan.start_block;
         let interest_amount: u128 = loan.principal * (loan.interest_bps as u128)
                                     * (elapsed as u128)
                                     / (BASIS_POINTS_DIVISOR * (loan.duration_blocks as u128));
         let total_due: u128 = loan.principal + interest_amount;
 
-        // Partial payment support
-        assert(payment > 0u128);
-        assert(loan.repaid + payment <= total_due);
+        // Must be a partial payment — use repay_full for final payment
+        assert(loan.repaid + payment < total_due);
 
-        let new_repaid: u128      = loan.repaid + payment;
-        let is_fully_repaid: bool = new_repaid >= total_due;
-        let new_status: u8        = is_fully_repaid ? 2u8 : 0u8;
-        let release_amount: u64   = is_fully_repaid ? collateral : 0u64;
-
-        // Transfer payment to lender
-        let ft_repay: Final   = test_usdcx_stablecoin.aleo::transfer_public_as_signer(lender, payment);
-        // Release collateral to borrower (0 if partial payment)
-        let ft_release: Final = credits.aleo::transfer_public(borrower, release_amount);
+        let ft_repay: Final = test_usdcx_stablecoin.aleo::transfer_public_as_signer(lender, payment);
 
         let updated: Loan = Loan {
             owner:           loan.owner,
@@ -214,8 +208,59 @@ program privlend_v6.aleo {
             interest_bps:    loan.interest_bps,
             start_block:     loan.start_block,
             duration_blocks: loan.duration_blocks,
-            repaid:          new_repaid,
-            status:          new_status,
+            repaid:          loan.repaid + payment,
+            status:          0u8,  // still active
+        };
+
+        return (updated, final {
+            ft_repay.run();
+
+            let owner: address = loan_owner.get(loan_id);
+            assert(owner == borrower);
+            // Loan stays active — no mapping changes needed
+        });
+    }
+
+    // ----------------------------------------------------------------
+    // 4b) Repay loan — final full payment (releases collateral)
+    //     Use when this payment clears the remaining balance.
+    // ----------------------------------------------------------------
+    fn repay_full(loan: Loan, payment: u128, current_block: u32) -> (Loan, Final) {
+        let borrower: address = self.caller;
+        let lender: address   = loan.lender;
+        let loan_id: u32      = loan.loan_id;
+        let collateral: u64   = loan.collateral;
+
+        assert(loan.status == 0u8);
+        assert(borrower    == loan.owner);
+        assert(payment     > 0u128);
+
+        // Time-based interest
+        let elapsed: u32          = current_block - loan.start_block;
+        let interest_amount: u128 = loan.principal * (loan.interest_bps as u128)
+                                    * (elapsed as u128)
+                                    / (BASIS_POINTS_DIVISOR * (loan.duration_blocks as u128));
+        let total_due: u128 = loan.principal + interest_amount;
+
+        // Must fully clear the remaining balance
+        assert(loan.repaid + payment >= total_due);
+
+        // Transfer final payment to lender + release collateral to borrower
+        let ft_repay:   Final = test_usdcx_stablecoin.aleo::transfer_public_as_signer(lender, payment);
+        let ft_release: Final = credits.aleo::transfer_public(borrower, collateral);
+
+        let updated: Loan = Loan {
+            owner:           loan.owner,
+            lender:          loan.lender,
+            loan_id:         loan.loan_id,
+            principal:       loan.principal,
+            collateral:      loan.collateral,
+            tier:            loan.tier,
+            interest_bps:    loan.interest_bps,
+            start_block:     loan.start_block,
+            duration_blocks: loan.duration_blocks,
+            repaid:          total_due,
+            status:          2u8,  // fully repaid
         };
 
         return (updated, final {
@@ -225,14 +270,12 @@ program privlend_v6.aleo {
             let owner: address = loan_owner.get(loan_id);
             assert(owner == borrower);
 
-            let new_active: bool = !is_fully_repaid;
-            let new_locked: bool = !is_fully_repaid;
-            loan_active.set(loan_id,       new_active);
-            collateral_locked.set(loan_id, new_locked);
+            loan_active.set(loan_id,       false);
+            collateral_locked.set(loan_id, false);
+            loan_collateral.set(loan_id,   0u64);
 
             let prev_count: u32 = repayment_count.get_or_use(borrower, 0u32);
-            let increment: u32  = is_fully_repaid ? 1u32 : 0u32;
-            repayment_count.set(borrower, prev_count + increment);
+            repayment_count.set(borrower, prev_count + 1u32);
         });
     }
 
@@ -257,10 +300,15 @@ program privlend_v6.aleo {
             let locked: bool = collateral_locked.get_or_use(loan_id, false);
             assert(locked);
 
+            // Verify col_amount matches what was actually locked — prevents lender over-claiming
+            let stored_collateral: u64 = loan_collateral.get(loan_id);
+            assert(col_amount == stored_collateral);
+
             ft_liq.run();
 
             loan_active.set(loan_id,       false);
             collateral_locked.set(loan_id, false);
+            loan_collateral.set(loan_id,   0u64);
         };
     }
 

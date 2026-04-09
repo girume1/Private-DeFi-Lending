@@ -1,6 +1,6 @@
 import { LoanPublic, TokenBalances } from "../types";
 
-export const PROGRAM_ID = import.meta.env.VITE_PROGRAM_ID || "privlend_v6.aleo";
+export const PROGRAM_ID = import.meta.env.VITE_PROGRAM_ID || "privlend_v8.aleo";
 export const NETWORK = import.meta.env.VITE_NETWORK || "testnet";
 export const API_ENDPOINT =
   import.meta.env.VITE_API_ENDPOINT || "https://api.explorer.provable.com/v2";
@@ -181,6 +181,16 @@ export class AleoService {
     } catch {
       return 0n;
     }
+  }
+
+  async getLoanCollateral(loanId: number): Promise<bigint> {
+    try {
+      const res = await fetch(`${this.base()}/program/${PROGRAM_ID}/mapping/loan_collateral/${loanId}u32`);
+      if (!res.ok) return 0n;
+      const text = await res.text();
+      const cleaned = text.replace(/['"]/g, '').replace(/u64$/i, '').trim();
+      try { return BigInt(cleaned); } catch { return 0n; }
+    } catch { return 0n; }
   }
 
   async getTokenBalances(address: string): Promise<TokenBalances> {

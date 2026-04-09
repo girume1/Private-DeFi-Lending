@@ -1,5 +1,5 @@
 {
-  "program": "privlend_v6.aleo",
+  "program": "privlend_v8.aleo",
   "structs": [],
   "records": [
     {
@@ -270,6 +270,19 @@
           "UInt": "U128"
         }
       }
+    },
+    {
+      "name": "loan_collateral",
+      "key": {
+        "Primitive": {
+          "UInt": "U32"
+        }
+      },
+      "value": {
+        "Primitive": {
+          "UInt": "U64"
+        }
+      }
     }
   ],
   "storage_variables": [],
@@ -315,7 +328,7 @@
               "path": [
                 "CreditTier"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
@@ -364,7 +377,7 @@
               "path": [
                 "CreditTier"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
@@ -421,7 +434,7 @@
               "path": [
                 "Loan"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
@@ -432,7 +445,7 @@
               "path": [
                 "Collateral"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
@@ -487,7 +500,7 @@
       ]
     },
     {
-      "name": "repay_loan",
+      "name": "repay_partial",
       "is_final": true,
       "inputs": [
         {
@@ -497,7 +510,7 @@
               "path": [
                 "Loan"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
@@ -532,7 +545,64 @@
               "path": [
                 "Loan"
               ],
-              "program": "privlend_v6.aleo"
+              "program": "privlend_v8.aleo"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "ty": "Final",
+          "mode": "None"
+        }
+      ]
+    },
+    {
+      "name": "repay_full",
+      "is_final": true,
+      "inputs": [
+        {
+          "name": "loan",
+          "ty": {
+            "Record": {
+              "path": [
+                "Loan"
+              ],
+              "program": "privlend_v8.aleo"
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "payment",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U128"
+              }
+            }
+          },
+          "mode": "None"
+        },
+        {
+          "name": "current_block",
+          "ty": {
+            "Plaintext": {
+              "Primitive": {
+                "UInt": "U32"
+              }
+            }
+          },
+          "mode": "None"
+        }
+      ],
+      "outputs": [
+        {
+          "ty": {
+            "Record": {
+              "path": [
+                "Loan"
+              ],
+              "program": "privlend_v8.aleo"
             }
           },
           "mode": "None"
