@@ -54,7 +54,7 @@ export default function App() {
       wallets={wallets}
       network={Network.TESTNET}
       decryptPermission={DecryptPermission.UponRequest}
-      autoConnect={}
+      autoConnect={false}
       programs={[PROGRAM_ID, CREDITS_PROGRAM, USDCX_PROGRAM]}
     >
       <WalletModalProvider>
